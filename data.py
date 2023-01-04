@@ -4,6 +4,7 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, transforms
 from sklearn.preprocessing import StandardScaler
 
+# Added comment
 
 data_path = "C:/Users/Lasse/Desktop/MLOPS/dtu_mlops/data/corruptmnist/"
 train_paths = [data_path+"train_"+str(i)+".npz" for i in range(5)]
