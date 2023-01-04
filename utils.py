@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 # Adding comment
+import numpy as np
 
 def plot_loss(epochs, losses):
   plt.plot(epochs, losses)
