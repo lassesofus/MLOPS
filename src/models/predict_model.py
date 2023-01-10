@@ -16,6 +16,7 @@ from tqdm import tqdm
 
 @click.group()
 def cli():
+    """Command-line interface entry point"""
     pass
 
 
@@ -23,6 +24,13 @@ def cli():
 @click.argument("model_checkpoint")
 @click.argument("data_path")
 def predict(model_checkpoint, data_path):
+    """
+    Predict the class for input data.
+
+    Args:
+        model_checkpoint (str): path to the trained model checkpoint.
+        data_path (str): path to the input data.
+    """
     print("Predicting")
 
     if torch.cuda.is_available():
@@ -39,11 +47,12 @@ def predict(model_checkpoint, data_path):
     # Get scaler from the training data
     train_dataset = MyDataset("train")
     scaler = train_dataset.get_scaler()
+    # Load test data and apply the scaler
     test_dataset = MyDataset("test", scaler, data_path=data_path)
     test_dl = DataLoader(test_dataset, batch_size=16, shuffle=True)
 
     with torch.no_grad():
-
+        # Put the model in evaluation mode
         model.eval() 
 
         correct = 0
