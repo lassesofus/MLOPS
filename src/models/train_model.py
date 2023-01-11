@@ -1,17 +1,18 @@
 import sys
+
 sys.path.append("/mnt/c/Users/Lasse/Desktop/DTU/7. semester/MLOps/MLOPS")
 import argparse
-import torch
+
 import click
 import torch
-from src.data.dataset import MyDataset
 from model import MyAwesomeModel
-from src.visualization.utils import plot_loss
-from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, transforms
 from torch import nn, optim
+from torch.utils.data import DataLoader, Dataset
+from torchvision import datasets, transforms
 from tqdm import tqdm
 
+from src.data.dataset import MyDataset
+from src.visualization.utils import plot_loss
 
 
 @click.group()
@@ -23,7 +24,7 @@ def cli():
 
 
 @click.command()
-@click.option("--lr", default=1e-3, help='learning rate to use for training')
+@click.option("--lr", default=1e-3, help="learning rate to use for training")
 def train(lr):
     """
     This function is the main training function for the model.
@@ -69,16 +70,18 @@ def train(lr):
             optimizer.step()
 
             running_loss += loss.item()
-        
+
         print(f"Training loss in epoch {e+1}: {running_loss}")
         train_losses.append(running_loss)
 
     # Using the visualization utility to plot the loss
     plot_loss(list(range(epochs)), list(train_losses))
     # Saving the trained model
-    torch.save(model.state_dict(), "/mnt/c/Users/Lasse/Desktop/DTU/7. semester/MLOps/MLOPS/models/checkpoint.pth")
+    torch.save(
+        model.state_dict(),
+        "/mnt/c/Users/Lasse/Desktop/DTU/7. semester/MLOps/MLOPS/models/checkpoint.pth",
+    )
 
-        
 
 cli.add_command(train)
 
@@ -86,4 +89,3 @@ cli.add_command(train)
 if __name__ == "__main__":
 
     cli()
-

@@ -1,17 +1,18 @@
 import sys
+
 sys.path.append("/mnt/c/Users/Lasse/Desktop/DTU/7. semester/MLOps/MLOPS")
 import argparse
-import torch
+
 import click
 import torch
-from src.data.dataset import MyDataset
 from model import MyAwesomeModel
-from src.visualization.utils import plot_loss
-from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, transforms
 from torch import nn, optim
+from torch.utils.data import DataLoader, Dataset
+from torchvision import datasets, transforms
 from tqdm import tqdm
 
+from src.data.dataset import MyDataset
+from src.visualization.utils import plot_loss
 
 
 @click.group()
@@ -43,7 +44,7 @@ def predict(model_checkpoint, data_path):
     model = MyAwesomeModel().to(device)
     state_dict = torch.load(model_checkpoint)
     model.load_state_dict(state_dict)
-    
+
     # Get scaler from the training data
     train_dataset = MyDataset("train")
     scaler = train_dataset.get_scaler()
@@ -53,7 +54,7 @@ def predict(model_checkpoint, data_path):
 
     with torch.no_grad():
         # Put the model in evaluation mode
-        model.eval() 
+        model.eval()
 
         correct = 0
         total = 0
@@ -66,7 +67,8 @@ def predict(model_checkpoint, data_path):
 
     print(predictions)
     print(len(predictions))
-    return predictions        
+    return predictions
+
 
 cli.add_command(predict)
 
@@ -74,4 +76,3 @@ cli.add_command(predict)
 if __name__ == "__main__":
 
     cli()
-

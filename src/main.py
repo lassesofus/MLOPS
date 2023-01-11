@@ -1,16 +1,16 @@
 import argparse
 import sys
 
-import torch
 import click
+import torch
+from model import MyAwesomeModel
+from torch import nn, optim
+from torch.utils.data import DataLoader, Dataset
+from torchvision import datasets, transforms
+from tqdm import tqdm
+from utils import plot_loss
 
 from src.data.dataset import MyDataset
-from model import MyAwesomeModel
-from utils import plot_loss
-from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, transforms
-from torch import nn, optim
-from tqdm import tqdm
 
 
 @click.group()
@@ -19,7 +19,7 @@ def cli():
 
 
 @click.command()
-@click.option("--lr", default=1e-3, help='learning rate to use for training')
+@click.option("--lr", default=1e-3, help="learning rate to use for training")
 def train(lr):
     print("Training day and night")
     print(lr)
@@ -48,14 +48,14 @@ def train(lr):
             optimizer.step()
 
             running_loss += loss.item()
-        
+
         print(f"Training loss in epoch {e+1}: {running_loss}")
         train_losses.append(running_loss)
-    
-    plot_loss(list(range(epochs)), list(train_losses))
-    torch.save(model.state_dict(), 'checkpoint.pth')
 
-        
+    plot_loss(list(range(epochs)), list(train_losses))
+    torch.save(model.state_dict(), "checkpoint.pth")
+
+
 @click.command()
 @click.argument("model_checkpoint")
 def evaluate(model_checkpoint):
@@ -66,7 +66,7 @@ def evaluate(model_checkpoint):
     model = MyAwesomeModel()
     state_dict = torch.load(model_checkpoint)
     model.load_state_dict(state_dict)
-    
+
     # Get scaler from the training data
     train_dataset = MyDataset("train")
     scaler = train_dataset.get_scaler()
@@ -75,7 +75,7 @@ def evaluate(model_checkpoint):
 
     with torch.no_grad():
 
-        model.eval() 
+        model.eval()
 
         correct = 0
         total = 0
@@ -87,9 +87,9 @@ def evaluate(model_checkpoint):
             # Determine which predictions are correct
             equals = top_class == labels.view(*top_class.shape)
             correct += equals.sum().item()
-        
-        accuracy = correct/total
-        print(f'Accuracy: {accuracy*100}%')
+
+        accuracy = correct / total
+        print(f"Accuracy: {accuracy*100}%")
 
 
 cli.add_command(train)
@@ -99,9 +99,3 @@ cli.add_command(evaluate)
 if __name__ == "__main__":
 
     cli()
-
-
-    
-    
-    
-    

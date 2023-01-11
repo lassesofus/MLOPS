@@ -1,37 +1,39 @@
 import sys
+
 sys.path.append("/mnt/c/Users/Lasse/Desktop/DTU/7. semester/MLOps/MLOPS")
 import argparse
-import torch
+
 import click
+import matplotlib.pyplot as plt
 import torch
+from sklearn.manifold import TSNE
+from torch import nn, optim
+from torch.utils.data import DataLoader, Dataset
+from torchvision import datasets, transforms
+from tqdm import tqdm
+
 from src.data.dataset import MyDataset
 from src.models.model import MyAwesomeModel
 from src.visualization.utils import plot_loss
-from torch.utils.data import Dataset, DataLoader
-from torchvision import datasets, transforms
-from torch import nn, optim
-from tqdm import tqdm
-from sklearn.manifold import TSNE
-import matplotlib.pyplot as plt
-
 
 
 @click.group()
 def cli():
     pass
 
+
 @click.command()
 @click.argument("model_checkpoint")
 @click.argument("output_path")
 def visualize(model_checkpoint, output_path):
-    print("Visualizing") 
+    print("Visualizing")
 
     if torch.cuda.is_available():
         device = torch.device("cuda")
         print("Running on the GPU")
     else:
         device = torch.device("cpu")
-        print("Running on the CPU")   
+        print("Running on the CPU")
 
     # Load saved model
     model = MyAwesomeModel().to(device)
@@ -54,7 +56,7 @@ def visualize(model_checkpoint, output_path):
             images = model.layer2(images)
 
             images = images.reshape(images.shape[0], -1)
-            #labels = labels
+            # labels = labels
 
             features.append(images)
             labels_list.append(labels)
@@ -67,7 +69,9 @@ def visualize(model_checkpoint, output_path):
     tsne = TSNE(n_components=2)
     features_tsne = tsne.fit_transform(features)
 
-    plt.scatter(features_tsne[:, 0], features_tsne[:, 1], c=labels_list, cmap="Spectral")
+    plt.scatter(
+        features_tsne[:, 0], features_tsne[:, 1], c=labels_list, cmap="Spectral"
+    )
     plt.savefig(output_path)
     plt.show()
 
@@ -78,4 +82,3 @@ cli.add_command(visualize)
 if __name__ == "__main__":
 
     cli()
-
